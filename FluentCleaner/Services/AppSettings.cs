@@ -89,9 +89,6 @@ public class AppSettings
     public string ModernSchedulerTime { get; set; } = "03:00";
     public bool ModernSchedulerShutdownAfter { get; set; }
 
-    // true once the user dismisses the startup donation tip
-    public bool DonationDismissed { get; set; } = false;
-
     // Classic writes keys this app doesn't type (WindowX/WindowY). Keep them across
     // a save instead of dropping them from the shared file.
     [JsonExtensionData]

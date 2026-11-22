@@ -16,13 +16,6 @@
   <!-- Main Window — tab strip and address bar (x:Uid) -->
   <data name="BtnNewTab.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip"><value>New tab</value></data>
   <data name="BtnDetailBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip"><value>Back</value></data>
-  <!-- Main Window — donation TeachingTip -->
-  <data name="DonationBanner.Title"><value>Enjoying FluentCleaner?</value></data>
-  <data name="DonationBanner.Subtitle"><value>If this app saves you time, consider supporting its development.</value></data>
-  <data name="Donation_OtherAmount"><value>Other amount…</value></data>
-  <data name="BtnDonatePayPal.Content"><value>PayPal</value></data>
-  <data name="BtnDonateKoFi.Content"><value>Ko-fi</value></data>
-  <data name="BtnDonateLater.Content"><value>Maybe later</value></data>
 
   <!-- ============================================================
        CLEANER PAGE — static XAML strings (x:Uid)
@@ -238,9 +231,6 @@
 
   <!-- Settings Page — database download progress -->
   <data name="LblDownloading.Text"><value>Downloading…</value></data>
-  <!-- Settings Page — donation InfoBar -->
-  <data name="DonationBar.Title"><value>Support FluentCleaner</value></data>
-  <data name="DonationBar.Message"><value>Choose an amount and currency for PayPal, or support the project through Ko-fi. ♥</value></data>
   <data name="SectionAppearance.Text"><value>Appearance</value></data>
   <data name="LblTheme.Text"><value>App theme</value></data>
   <data name="LblThemeDesc.Text"><value>Choose how FluentCleaner looks on your device.</value></data>
@@ -438,7 +428,6 @@
   <data name="BtnAppMenu.ToolTipService.ToolTip"><value>Settings and more</value></data>
   <data name="BtnAppMenu.AutomationProperties.Name"><value>App menu</value></data>
   <data name="AppMenuSettings.Text"><value>Settings</value></data>
-  <data name="AppMenuDonate.Text"><value>Support the project</value></data>
   <data name="AppMenuUpdates.Text"><value>Check for updates</value></data>
   <data name="ShareSelection.Text"><value>Share selection</value></data>
   <data name="SC_Title"><value>FluentSeed</value></data>

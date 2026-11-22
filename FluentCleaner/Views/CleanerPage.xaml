@@ -115,7 +115,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:CleanerEntryViewModel">
                                             <!-- Three columns: [checkbox+name] [size after scan] [...] -->
-                                            <Grid Padding="2,1" Margin="16,0,0,0"
+                                            <Grid Padding="2,0" Margin="16,0,0,0"
                                                       PointerEntered="EntryRow_PointerEntered"
                                                       PointerExited="EntryRow_PointerExited">
                                                 <Grid.ColumnDefinitions>

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Globalization;
 using FluentCleaner.Services;
 using FluentCleaner.ViewModels;
 using Microsoft.UI.Xaml;
@@ -12,16 +11,6 @@ namespace FluentCleaner.Views;
 public sealed partial class SettingsPage : Page, IPageActions
 {
     private static readonly HttpClient _http = new();
-    private static readonly Dictionary<string, int[]> DonationAmounts = new()
-    {
-        ["EUR"] = [5, 10, 25, 50, 100, 200, 500, 1000],
-        ["USD"] = [5, 10, 25, 50, 100, 200, 500, 1000],
-        ["GBP"] = [5, 10, 25, 50, 100, 200, 500, 1000],
-        ["CHF"] = [5, 10, 25, 50, 100, 200, 500, 1000],
-        ["CAD"] = [10, 20, 50, 100, 200, 400, 750, 1500],
-        ["AUD"] = [10, 20, 50, 100, 200, 400, 750, 1500],
-        ["JPY"] = [500, 1000, 2500, 5000, 10000, 20000, 50000, 100000, 150000]
-    };
     private string? _updateVersion; // null = up to date, string = new version available
     private bool _pageReady; // true when the page has finished loading and is ready to handle events
     private string _groqKey = "";
@@ -39,7 +28,6 @@ public sealed partial class SettingsPage : Page, IPageActions
         InitializeComponent();
         _navigationReady = true;
         ShowSettingsSection("General");
-        InitializeDonationOptions();
         AiProviderBox.ItemsSource = new[] { "Groq", "OpenAI", "Anthropic" };
         Loaded += async (_, _) =>
         {
@@ -130,51 +118,9 @@ public sealed partial class SettingsPage : Page, IPageActions
         }
     }
 
-    private void DonationBanner_Dismiss(object sender, RoutedEventArgs e) =>
-        DonationBanner.IsOpen = false;
-
-    private void InitializeDonationOptions()
-    {
-        DonationCurrencyBox.ItemsSource = DonationAmounts.Keys;
-
-        var localCurrency = RegionInfo.CurrentRegion.ISOCurrencySymbol;
-        DonationCurrencyBox.SelectedItem = DonationAmounts.ContainsKey(localCurrency)
-            ? localCurrency
-            : "EUR";
-    }
-
-    private void DonationCurrencyBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (DonationCurrencyBox.SelectedItem is not string currency) return;
-
-        DonationAmountBox.ItemsSource = DonationAmounts[currency]
-            .Cast<object>()
-            .Append(ResourceService.Get("Donation_OtherAmount"))
-            .ToArray();
-        DonationAmountBox.SelectedIndex = 1; // sensible second tier for every currency
-    }
-
-    private void DonationAmountBox_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
-        DonationCurrencyBox.IsEnabled = DonationAmountBox.SelectedItem is int;
-
     private async void Link_GitHub(object sender, RoutedEventArgs e)   => await AppLinks.OpenAsync(AppLinks.GitHub);
     private async void Link_Issues(object sender, RoutedEventArgs e)   => await AppLinks.OpenAsync(AppLinks.Issues);
     private async void Link_Releases(object sender, RoutedEventArgs e) => await AppLinks.OpenAsync(AppLinks.Releases);
-    private async void Link_Donate(object sender, RoutedEventArgs e)
-    {
-        if (DonationAmountBox.SelectedItem is string)
-        {
-            await AppLinks.OpenAsync(AppLinks.Donate);
-            return;
-        }
-
-        if (DonationAmountBox.SelectedItem is not int amount ||
-            DonationCurrencyBox.SelectedItem is not string currency)
-            return;
-
-        await AppLinks.OpenAsync(AppLinks.CreatePayPalDonationUrl(amount, currency));
-    }
-    private async void Link_KoFi(object sender, RoutedEventArgs e)     => await AppLinks.OpenAsync(AppLinks.KoFi);
     private async void Link_Faq(object sender, RoutedEventArgs e)        => await AppLinks.OpenAsync(AppLinks.Faq);
     private async void Link_IconCredit(object sender, RoutedEventArgs e) => await AppLinks.OpenAsync(AppLinks.IconCredit);
 

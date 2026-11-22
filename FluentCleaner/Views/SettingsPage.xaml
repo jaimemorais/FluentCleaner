@@ -22,28 +22,6 @@
                      IsClosable="True"
                      Severity="Error" />
 
-            <!-- Donation banner -->
-            <InfoBar x:Name="DonationBanner"
-                     x:Uid="DonationBar"
-                     IsOpen="True"
-                     IsClosable="True"
-                     Severity="Warning">
-                <InfoBar.Content>
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-                        <ComboBox x:Name="DonationAmountBox"
-                                  Width="120"
-                                  SelectionChanged="DonationAmountBox_SelectionChanged" />
-                        <ComboBox x:Name="DonationCurrencyBox"
-                                  Width="86"
-                                  SelectionChanged="DonationCurrencyBox_SelectionChanged" />
-                        <Button x:Uid="BtnDonatePayPal"
-                                Click="Link_Donate"
-                                Style="{StaticResource AccentButtonStyle}" />
-                        <Button x:Uid="BtnDonateKoFi" Click="Link_KoFi" />
-                        <Button x:Uid="BtnDonateLater" Click="DonationBanner_Dismiss" />
-                    </StackPanel>
-                </InfoBar.Content>
-            </InfoBar>
         </StackPanel>
 
     <Grid Grid.Row="1">
