@@ -13,15 +13,7 @@ public partial class App : Application
 
     public App()
     {
-        //Language must be applied BEFORE InitializeComponent so WinUI reads it once at startup
-        try
-        {
-            var lang = AppSettings.Instance.Language;
-            if (!string.IsNullOrWhiteSpace(lang))
-                Microsoft.Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = lang;
-        }
-        catch { /* if resources broken, let app keep running in default language */ }
-
+        Microsoft.Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
         InitializeComponent();
 
         UnhandledException += (_, e) =>
@@ -53,10 +45,6 @@ public partial class App : Application
     {
 
         AppSettings.Reload();
-
-        //force language for code-side strings (CLI, status messages, dialogs)
-        // XAML x:Uid strings always follow the Windows display language
-        ResourceService.SetLanguage(AppSettings.Instance.Language);
 
         // SilentRunner headless clean, no window; /SHUTDOWN shuts down after
         var cmdArgs = Environment.GetCommandLineArgs();

@@ -1,17 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-
-  <!-- ============================================================
-       TRANSLATOR CREDIT
-       Leave the value empty in the source (en-US) file.
-       Each translator fills this in their own Strings\{lang}\Resources.resw,
-       e.g.: Translation: Jane Doe · jane.example.com
-  ============================================================ -->
-  <data name="LblTranslatorCredit"><value></value></data>
 
   <!-- ============================================================
        MAIN WINDOW
@@ -202,10 +194,6 @@
   <data name="DlgSourceError"><value>Scan failed: {0}</value></data>
   <data name="DlgSourceCancel"><value>Cancel</value></data>
   <data name="DlgSourceCancelled"><value>Cancelled.</value></data>
-  <data name="DlgRestartTitle"><value>Restart required</value></data>
-  <data name="DlgRestartMessage"><value>FluentCleaner needs to restart to apply the changes.</value></data>
-  <data name="DlgRestartNow"><value>Restart now</value></data>
-  <data name="DlgRestartLater"><value>Later</value></data>
 
   <!-- ============================================================
        STATUS MESSAGES — CleanerPageViewModel (format strings)
@@ -264,9 +252,6 @@
   <data name="BackdropMica.Content"><value>Mica</value></data>
   <data name="BackdropMicaAlt.Content"><value>Mica Alt</value></data>
   <data name="BackdropAcrylic.Content"><value>Acrylic</value></data>
-  <data name="LblLanguage.Text"><value>Language</value></data>
-  <data name="LblLanguageDesc.Text"><value>Override the display language. Restart required to apply.</value></data>
-  <data name="St_LangAuto"><value>System default</value></data>
   <data name="SectionDatabase.Text"><value>Database</value></data>
   <data name="LblDatabaseDesc.Text"><value>Choose which entry lists are loaded for scanning and cleaning.</value></data>
   <data name="LblWinapp2.Text"><value>Winapp2</value></data>
@@ -314,7 +299,6 @@
   <data name="LblPortableActive.Text"><value>📦 Portable mode active — settings stored next to exe</value></data>
   <data name="SectionAbout.Text"><value>About</value></data>
   <data name="LblCopyright.Text"><value>© 2026 A Belim app creation</value></data>
-  <!-- (LblTranslatorCredit is defined at the top of this file) -->
   <data name="BtnGitHub.Content"><value>GitHub</value></data>
   <data name="BtnReportIssue.Content"><value>Report an issue</value></data>
   <data name="BtnIconCredit.Content"><value>App icon by naderi</value></data>

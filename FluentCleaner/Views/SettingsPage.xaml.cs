@@ -49,12 +49,6 @@ public sealed partial class SettingsPage : Page, IPageActions
             LoadAiSettings();
             await LoadSchedulerSettingsAsync();
 
-            // Translator credit: hidden when the language file leaves it empty.
-            var credit = ResourceService.Get("LblTranslatorCredit");
-            var hasCredit = !string.IsNullOrWhiteSpace(credit) && credit != "LblTranslatorCredit";
-            lblTranslatorCredit.Text       = hasCredit ? credit : "";
-            lblTranslatorCredit.Visibility = hasCredit ? Visibility.Visible : Visibility.Collapsed;
-
             _pageReady = true;
         };
     }
@@ -80,28 +74,6 @@ public sealed partial class SettingsPage : Page, IPageActions
         BackupSection.Visibility = AboutSection.Visibility =
             section == "About" ? Visibility.Visible : Visibility.Collapsed;
         SettingsScroll.ChangeView(null, 0, null, true);
-    }
-
-    private async void LangCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (!_pageReady) return;
-
-        var result = await new ContentDialog
-        {
-            XamlRoot          = XamlRoot,
-            RequestedTheme    = ActualTheme,
-            Title             = ResourceService.Get("DlgRestartTitle"),
-            Content           = ResourceService.Get("DlgRestartMessage"),
-            PrimaryButtonText = ResourceService.Get("DlgRestartNow"),
-            CloseButtonText   = ResourceService.Get("DlgRestartLater"),
-            DefaultButton     = ContentDialogButton.Primary
-        }.ShowAsync();
-
-        if (result == ContentDialogResult.Primary)
-        {
-            Process.Start(Environment.ProcessPath!);
-            Application.Current.Exit();
-        }
     }
 
     // --- Update check --------------------------------------------

@@ -1,5 +1,3 @@
-using FluentCleaner.Services;   // Loc and WorkProgress are shared with the app uninstaller
-
 namespace FluentCleaner.Plugins.Tweaks;
 
 //reads the pc and never writes to it. writing is the applier's job alone.

@@ -101,29 +101,6 @@
                 </Grid>
             </Border>
 
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18,14">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                        <TextBlock x:Uid="LblLanguage" FontWeight="SemiBold" />
-                        <TextBlock x:Uid="LblLanguageDesc"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                   Style="{StaticResource CaptionTextBlockStyle}" />
-                    </StackPanel>
-                    <ComboBox Grid.Column="1"
-                              ItemsSource="{x:Bind ViewModel.Languages}"
-                              SelectedItem="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}"
-                              SelectionChanged="LangCombo_SelectionChanged"
-                              DisplayMemberPath="Name"
-                              MinWidth="140" VerticalAlignment="Center" />
-                </Grid>
-            </Border>
-
             </StackPanel>
 
             <!-- Database -->
@@ -774,11 +751,6 @@
                             </StackPanel>
                             <TextBlock x:Uid="LblCopyright"
                                        FontSize="11"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                            <!-- Translator credit: filled per language in Resources.resw, hidden when empty -->
-                            <TextBlock x:Name="lblTranslatorCredit"
-                                       FontSize="11"
-                                       Visibility="Collapsed"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
 

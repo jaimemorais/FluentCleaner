@@ -42,10 +42,7 @@ internal sealed class Tweak
 
     private bool? _admin;               // worked out once, the paths never change afterwards
 
-    //the ini holds the english wording, a language file beside it may replace it
-    public string Title => RuleText.Get("Name", Name, Name);
-    public string Text => RuleText.Get("Detail", Name, Description);
-    //a category out of a plugin's ini has no Where_ key in any locale file, so the raw name the
-    //ini wrote is the stand-in: "Browser" reads like a category, "Where_Browser" does not
+    public string Title => Name;
+    public string Text => Description;
     public string Where => Loc.GetOr("Where_" + Category, Category);
 }

@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -7,7 +6,7 @@ using FluentCleaner.Models;
 namespace FluentCleaner.Services;
 
 // Explains Winapp2 entries and generates Custom Cleaners through the provider
-// selected in Settings. Results are cached per provider, language and rule.
+// selected in Settings. Results are cached per provider and rule.
 public static class AiExplainer
 {
     private static readonly HttpClient _http = new();
@@ -43,7 +42,7 @@ public static class AiExplainer
     public static async Task<string> ExplainAsync(CleanerEntry entry)
     {
         var provider = AppSettings.Instance.AiProvider;
-        var cacheKey = $"{provider}\n{AppSettings.Instance.Language}\n{entry.RawText}";
+        var cacheKey = $"{provider}\n{entry.RawText}";
         if (_cache.TryGetValue(cacheKey, out var cached))
             return cached;
 
@@ -51,7 +50,7 @@ public static class AiExplainer
         if (string.IsNullOrWhiteSpace(apiKey))
             return $"{provider}: {ResourceService.Get("AI_NoKeyShort")}";
 
-        var systemPrompt = "You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided." + LangInstruction();
+        var systemPrompt = "You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately in English based on the file paths and registry keys provided.";
         var (text, error) = await SendChatAsync(provider, apiKey!, systemPrompt, BuildPrompt(entry), 300);
         if (error != null)
             return ProviderMessage("AI_ApiError", provider, error);
@@ -88,7 +87,8 @@ public static class AiExplainer
                 "  %ProgramFiles% %ProgramFiles(x86)% %UserProfile%\n" +
                 "  %SystemRoot% %System% %SystemDrive% %Temp%\n" +
                 "  %Documents% %Desktop% %Music% %Pictures% %Videos%\n" +
-                "OTHER FIELDS: Section=  Warning=  Default=True|False");
+                "OTHER FIELDS: Section=  Warning=  Default=True|False\n" +
+                "Write all natural-language field values in English.");
 
     // Generates a PowerShell cleanup script from a plain-English description.
     public static Task<string> GenerateScriptAsync(string description) =>
@@ -103,6 +103,7 @@ public static class AiExplainer
                 "  - Use $env: variables where appropriate: $env:LOCALAPPDATA $env:APPDATA $env:TEMP $env:USERPROFILE $env:ProgramFiles $env:SystemRoot.\n" +
                 "  - Always use -ErrorAction SilentlyContinue or try/catch — never let the script crash.\n" +
                 "  - Use Write-Host to report progress.\n" +
+                "  - Write the required script comment in English.\n" +
                 "  - NEVER use Invoke-Expression or download and execute remote code.");
 
     // Sends generation requests through the same provider selected for explanations.
@@ -125,7 +126,7 @@ public static class AiExplainer
         var userMsg = "Describe FluentCleaner by Belim (builtbybel) in 2 short sentences. " +
             "Facts: open-source, built solo, written in C# on .NET 10 and WinUI 3, native Windows UI, " +
             "no telemetry, uses the Winapp2 database. Do NOT mention AI, machine learning or any " +
-            "AI-related features. Keep it factual." + LangInstruction();
+            "AI-related features. Keep it factual and respond in English.";
 
         var (text, error) = await SendChatAsync(provider, apiKey, systemPrompt: null, userMsg, maxTokens: 512);
         return error != null ? $"✗ {error}" : $"✓ {text}";
@@ -201,24 +202,6 @@ public static class AiExplainer
         {
             return (null, ProviderMessage("AI_NetworkError", provider, ex.Message));
         }
-    }
-
-    // Match the answer language to the active Modern UI language.
-    private static string LangInstruction()
-    {
-        var lang = AppSettings.Instance.Language;
-        if (string.IsNullOrWhiteSpace(lang))
-            lang = CultureInfo.CurrentUICulture.Name;
-
-        if (lang.StartsWith("en", StringComparison.OrdinalIgnoreCase))
-            return string.Empty;
-
-        try
-        {
-            var name = CultureInfo.GetCultureInfo(lang).Parent.EnglishName;
-            return $" Please respond in {name}.";
-        }
-        catch { return string.Empty; }
     }
 
     // Include the real paths so the explanation is about this rule, not its title alone.

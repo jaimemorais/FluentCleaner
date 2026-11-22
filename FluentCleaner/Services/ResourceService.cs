@@ -2,40 +2,11 @@ using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace FluentCleaner.Services;
 
-//Localized string lookup for code-side strings (status messages, dialogs).
-//XAML uses x:Uid directly
-//New language: drop a Strings\{lang}\Resources.resw folder and rebuild
+//English string lookup for code-side strings (status messages, dialogs).
+//XAML uses x:Uid directly.
 public static class ResourceService
 {
-    private static ResourceLoader? _loader;
-
-    private static ResourceLoader Loader => _loader ??= new ResourceLoader();
-
-    //Scans Strings\{lang}\ folders next to the exe for installed languages
-    public static IReadOnlyList<string> GetAvailableLanguages()
-    {
-        var result = new List<string>();
-        var dir = Path.Combine(AppContext.BaseDirectory, "Strings");
-        if (!Directory.Exists(dir)) return result;
-
-        foreach (var sub in Directory.GetDirectories(dir))
-            if (File.Exists(Path.Combine(sub, "Resources.resw")))
-                result.Add(Path.GetFileName(sub));
-
-        return result;
-    }
-
-    //null / "" = follow Windows display language
-    public static void SetLanguage(string? lang)
-    {
-        try
-        {
-            Microsoft.Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = lang ?? "";
-        }
-        catch { /* ignore;app keeps running in the current language */ }
-
-        _loader = null;  //force a fresh loader so lookups pick up the new language
-    }
+    private static readonly ResourceLoader Loader = new();
 
     // Returns the key itself as fallback when a string is missing
     public static string Get(string key)

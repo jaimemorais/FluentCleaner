@@ -3,15 +3,11 @@ using FluentCleaner.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Net.Http;
 
 namespace FluentCleaner.ViewModels;
 
 public record HistoryRow(string Date, string Amount, string Bar, string Items);
-
-// One entry in the language dropdown. Code is the BCP-47 tag ("en-US") or "" for system default.
-public record LanguageOption(string Code, string Name);
 
 public partial class SettingsPageViewModel : ObservableObject
 {
@@ -62,9 +58,6 @@ public partial class SettingsPageViewModel : ObservableObject
     [ObservableProperty] public partial int    ThemeIndex    { get; set; }
     [ObservableProperty] public partial bool   RestartRequired { get; set; }
 
-    // Language dropdown — populated at runtime from the deployed Strings\{lang}\ folders.
-    public ObservableCollection<LanguageOption> Languages { get; } = [];
-    [ObservableProperty] public partial LanguageOption? SelectedLanguage { get; set; }
     [ObservableProperty] public partial bool   IsPortable { get; set; }         // true when settings.json sits next to exe
 
     private bool _refreshing;
@@ -80,44 +73,6 @@ public partial class SettingsPageViewModel : ObservableObject
         AppSettings.Instance.Theme = theme;
         AppSettings.Instance.Save();
         (Microsoft.UI.Xaml.Application.Current as App)?.ApplyTheme(theme);
-    }
-
-    // --- Language -------------------------------------------------------------
-
-    partial void OnSelectedLanguageChanged(LanguageOption? value)
-    {
-        if (_refreshing || value is null) return;
-        AppSettings.Instance.Language = value.Code;
-        AppSettings.Instance.Save();
-        ResourceService.SetLanguage(value.Code); // applies PrimaryLanguageOverride; code-side strings switch immediately
-        // restart prompt is shown by SettingsPage code-behind via PropertyChanged
-    }
-
-    // Builds the dropdown: a "System default" entry first, then every discovered language shown in
-    // its own native name (e.g. "English", "Deutsch") so the picker reads naturally for each locale
-    private void BuildLanguageList()
-    {
-        Languages.Clear();
-        Languages.Add(new LanguageOption("", ResourceService.Get("St_LangAuto")));
-
-        foreach (var code in ResourceService.GetAvailableLanguages())
-            Languages.Add(new LanguageOption(code, NativeName(code)));
-
-        var current = AppSettings.Instance.Language ?? "";
-        SelectedLanguage = Languages.FirstOrDefault(l => l.Code == current) ?? Languages[0];
-    }
-
-    // Returns the language's own name, capitalized (de-DE -> "Deutsch", en-US -> "English").
-    private static string NativeName(string code)
-    {
-        try
-        {
-            var ci      = CultureInfo.GetCultureInfo(code);
-            var neutral = ci.IsNeutralCulture ? ci : (ci.Parent ?? ci);
-            var name    = (neutral ?? ci).NativeName;
-            return string.IsNullOrEmpty(name) ? code : char.ToUpper(name[0]) + name[1..];
-        }
-        catch { return code; }   // unknown tag? show the raw code rather than crashing
     }
 
     // --- Database toggles -----------------------------------------------------
@@ -266,7 +221,6 @@ public partial class SettingsPageViewModel : ObservableObject
         CleanHistoryEnabled      = s.CleanHistoryEnabled;
         IsPortable          = AppSettings.IsPortable;
         ThemeIndex          = s.Theme    switch { "Light" => 1, "Dark"  => 2,    _ => 0 };
-        BuildLanguageList();
 
         _refreshing = false;
         BuildHistoryRows();

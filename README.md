@@ -1,5 +1,3 @@
-[<a href="README.md">English</a>]| [<a href="README_ID.md">Indonesia</a>]| [<a href="README_PL.md">Polski</a>]
-
 > [!CAUTION]
 > ## ⚠️ Beware of Fake FluentCleaner Websites
 >
@@ -173,35 +171,22 @@ CCleaner dropping support was honestly part of the motivation to build this
 
 <summary>can i translate FluentCleaner into my language?</summary>
 
-yes please 🙌 it's built for it. here's the whole process:
+FluentCleaner is currently available in English only.
 
-1. copy `FluentCleaner/Strings/en-US/Resources.resw`
-2. create `FluentCleaner/Strings/{your-locale}/Resources.resw` (e.g. `fr-FR`, `pt-BR`, `zh-CN`)
-3. translate every `<value>` — **leave the key names (`name="..."`) untouched**
-4. set `LblTranslatorCredit` to your name (add your site if you want the credit)
-5. open a pull request 🎉
 
-two things that trip people up:
-- **don't touch the XML structure** — no editing `<data>`, `<resheader>`, the version header or the `<?xml ...>` line. only the text inside `<value>` gets translated.
-- **this is only for the app UI.** the cleaning databases (winapp2.ini etc.) come from the upstream Winapp2 project and aren't translated here.
 
-save the file as UTF-8 and you're good. don't see your language yet? that just means nobody's done it — could be you 😉
+
+- The application ships in English only — no editing `<data>`, `<resheader>`, the version header or the `<?xml ...>` line. only English strings are currently included.
+
+
+
 
 </details>
 
 <details>
 <summary>can i translate FluentCleaner Classic into my language?</summary>
 
-absolutely 🙌 Classic loads its translations from loose JSON files at runtime, so no recompilation is needed.
-
-1. copy `FluentCleaner.Classic/Localization/en.json`
-2. rename it to your locale (e.g. `fr-FR.json`, `pt-BR.json`, `ja-JP.json`)
-3. translate the string values — **keep every key and placeholder such as `{0}` unchanged**
-4. fill in `_Meta_LanguageDisplayName`, `_Meta_TranslatorName` and optionally `_Meta_TranslatorWebsite`
-5. test it from **Options > Settings > Open localization folder**
-6. submit the JSON file through a pull request or GitHub issue 🎉
-
-see the full [Classic translation guide](FluentCleaner.Classic/TRANSLATING_CLASSIC.md) for details.
+Only English language resources are included.
 
 </details>
 

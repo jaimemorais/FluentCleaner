@@ -92,9 +92,6 @@ public class AppSettings
     // true once the user dismisses the startup donation tip
     public bool DonationDismissed { get; set; } = false;
 
-    // UI language override; "" = follow Windows, "en-US" / "de-DE" = forced
-    public string Language { get; set; } = "";
-
     // Classic writes keys this app doesn't type (WindowX/WindowY). Keep them across
     // a save instead of dropping them from the shared file.
     [JsonExtensionData]
@@ -153,6 +150,7 @@ public class AppSettings
             if (!File.Exists(SettingsFile)) return new();
             var s = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(SettingsFile), JsonOptions) ?? new();
             s.CustomWinapp2Path = NormalizePath(s.CustomWinapp2Path);
+            RemoveLegacyLanguageSetting(s);
             return s;
         }
         catch { return new(); }  // corrupted file;just start fresh
@@ -168,8 +166,16 @@ public class AppSettings
         var json = File.ReadAllText(path);
         var s = JsonSerializer.Deserialize<AppSettings>(json, JsonOptions) ?? new();
         s.CustomWinapp2Path = NormalizePath(s.CustomWinapp2Path);
+        RemoveLegacyLanguageSetting(s);
         Instance = s;
         Instance.Save();
+    }
+
+    private static void RemoveLegacyLanguageSetting(AppSettings settings)
+    {
+        foreach (var key in settings.Extra.Keys.Where(key =>
+                     string.Equals(key, "Language", StringComparison.OrdinalIgnoreCase)).ToArray())
+            settings.Extra.Remove(key);
     }
 
     // strips quotes and expands %env% variables so paths from the JSON always work

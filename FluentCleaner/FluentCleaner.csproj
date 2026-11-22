@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
@@ -48,17 +48,9 @@
     <Compile Include="..\FluentCleaner.Core\Services\Winapp2Parser.cs" Link="Services\Winapp2Parser.cs" />
   </ItemGroup>
 
-  <!-- Localization: every Strings/{lang}/Resources.resw is compiled into the .pri for       -->
-  <!-- XAML x:Uid resolution. The glob auto-includes any new language folder on the next      -->
-  <!-- build — just drop a Strings/{lang}/Resources.resw and rebuild; no edits needed here.   -->
   <ItemGroup>
-    <PRIResource Include="Strings\**\*.resw" />
-  </ItemGroup>
-  <!-- Also deploy the raw resw folders next to the exe. The strings still come from the .pri; -->
-  <!-- these copies exist only so the language dropdown can discover available languages at    -->
-  <!-- runtime by scanning Strings\{lang}\ (ResourceService.GetAvailableLanguages).            -->
-  <ItemGroup>
-    <Content Include="Strings\**\*.resw">
+    <PRIResource Include="Strings\en-US\Resources.resw" />
+    <Content Include="Strings\en-US\Resources.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

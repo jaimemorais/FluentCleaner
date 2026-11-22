@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using System.Reflection;
 
 namespace FluentCleaner;
@@ -5,6 +6,15 @@ namespace FluentCleaner;
 public static class AppInfo
 {
     public const bool IsInsider = false;
+    public static bool IsEleven { get; } = ReadIsEleven();
+
+    private static bool ReadIsEleven()
+    {
+        using var key = Registry.LocalMachine
+            .OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+        return int.TryParse(key?.GetValue("CurrentBuildNumber") as string, out var build)
+            && build >= 22000;
+    }
 
     // Returns version as 26.03.01
     public static string VersionString

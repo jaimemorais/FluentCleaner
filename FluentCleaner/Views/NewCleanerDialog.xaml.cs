@@ -6,22 +6,22 @@ namespace FluentCleaner.Views;
 
 public sealed partial class NewCleanerDialog : ContentDialog
 {
-    public string EntryName    => nameBox.Text.Trim();
+    public string EntryName => nameBox.Text.Trim();
     public string EntryContent => contentBox.Text.Trim();
-    public bool   IsScript     => btnPs1.IsChecked == true;
+    public bool IsScript => btnPs1.IsChecked == true;
 
     public NewCleanerDialog(CustomEntryVm? existing)
     {
         InitializeComponent();
 
         // Localized strings that can't use x:Uid (ContentDialog buttons) or share plain code-side keys.
-        PrimaryButtonText       = ResourceService.Get("DlgNewCleanerSave");
-        CloseButtonText         = ResourceService.Get("DlgNewCleanerCancel");
-        nameBox.Header          = ResourceService.Get("DlgNewCleanerNameHeader");
+        PrimaryButtonText = ResourceService.Get("DlgNewCleanerSave");
+        CloseButtonText = ResourceService.Get("DlgNewCleanerCancel");
+        nameBox.Header = ResourceService.Get("DlgNewCleanerNameHeader");
         nameBox.PlaceholderText = ResourceService.Get("DlgNewCleanerNamePlaceholder");
         promptBox.PlaceholderText = ResourceService.Get("DlgNewCleanerAiPlaceholder");
-        contentLabel.Text       = ResourceService.Get("DlgNewCleanerContentLabel");
-        testBtn.Content         = ResourceService.Get("DlgNewCleanerTest");
+        contentLabel.Text = ResourceService.Get("DlgNewCleanerContentLabel");
+        testBtn.Content = ResourceService.Get("DlgNewCleanerTest");
 
         Title = existing is null ? ResourceService.Get("DlgNewCleanerTitleNew") : ResourceService.Fmt("DlgNewCleanerTitleEdit", existing.Name);
 
@@ -31,17 +31,20 @@ public sealed partial class NewCleanerDialog : ContentDialog
 
         if (existing is not null)
         {
-            nameBox.Text     = existing.Name;
+            nameBox.Text = existing.Name;
             btnIni.IsChecked = !existing.IsScript;
-            btnPs1.IsChecked =  existing.IsScript;
+            btnPs1.IsChecked = existing.IsScript;
             btnIni.IsEnabled = false;
             btnPs1.IsEnabled = false;
 
-            try { contentBox.Text = File.ReadAllText(existing.FilePath); } catch { }
-        }
+            try { contentBox.Text = File.ReadAllText(existing.FilePath); }
+            catch
+            { //ok }
+            }
 
-        //Test only makes sense for ini;scripts can't be dry-run
-        testBtn.Visibility = IsScript ? Visibility.Collapsed : Visibility.Visible;
+            //Test only makes sense for ini;scripts can't be dry-run
+            testBtn.Visibility = IsScript ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     // --- Event handlers --------------------------------------------------
@@ -49,7 +52,7 @@ public sealed partial class NewCleanerDialog : ContentDialog
     {
         var isPs1 = sender == btnPs1;
         btnIni.IsChecked = !isPs1;
-        btnPs1.IsChecked =  isPs1;
+        btnPs1.IsChecked = isPs1;
         testBtn.Visibility = isPs1 ? Visibility.Collapsed : Visibility.Visible;
     }
 
@@ -70,12 +73,12 @@ public sealed partial class NewCleanerDialog : ContentDialog
         if (string.IsNullOrEmpty(desc)) return;
 
         generateBtn.IsEnabled = false;
-        generateBtn.Content   = ResourceService.Get("DlgNewCleanerGenerating");
-        contentBox.Text       = IsScript
+        generateBtn.Content = ResourceService.Get("DlgNewCleanerGenerating");
+        contentBox.Text = IsScript
             ? await AiExplainer.GenerateScriptAsync(desc)
             : await AiExplainer.GenerateEntryAsync(desc);
         generateBtn.IsEnabled = true;
-        generateBtn.Content   = ResourceService.Get("DlgNewCleanerGenerateBtn");
+        generateBtn.Content = ResourceService.Get("DlgNewCleanerGenerateBtn");
     }
 
     // --- Templates -------------------------------------------------------

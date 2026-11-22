@@ -10,12 +10,8 @@ internal static class TweakDatabase
 
     public static List<Tweak> All => _all ??= Read();   // every tweak, by category and then by name
 
-    //back to disk on the next read: rule packs and language files alike
-    public static void Forget()
-    {
-        _all = null;
-        RuleText.Forget();
-    }
+    //back to disk on the next read
+    public static void Forget() => _all = null;
 
     // --- reading -------------------------------------------------------------
 
@@ -33,8 +29,7 @@ internal static class TweakDatabase
         return byName.Values.OrderBy(tweak => tweak.Category).ThenBy(tweak => tweak.Name).ToList();
     }
 
-    //this plugin's own folder beside the exe; the translations sit in Lang\ underneath it,
-    //which this never reads, because GetFiles does not descend
+    //this plugin's own folder beside the exe
     private static string Dir => PluginPaths.Dir("Tweaks");
 
     //winrules.ini first, then every other ini beside it in name order. no file has to be
