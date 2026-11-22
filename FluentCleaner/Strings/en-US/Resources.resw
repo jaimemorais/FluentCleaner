@@ -428,7 +428,6 @@
   <data name="BtnAppMenu.ToolTipService.ToolTip"><value>Settings and more</value></data>
   <data name="BtnAppMenu.AutomationProperties.Name"><value>App menu</value></data>
   <data name="AppMenuSettings.Text"><value>Settings</value></data>
-  <data name="AppMenuUpdates.Text"><value>Check for updates</value></data>
   <data name="ShareSelection.Text"><value>Share selection</value></data>
   <data name="SC_Title"><value>FluentSeed</value></data>
   <data name="SC_Intro"><value>A FluentSeed is your selection as one line of text. Whoever pastes it here gets the same entries selected. No files, no paths, nothing about your PC.</value></data>

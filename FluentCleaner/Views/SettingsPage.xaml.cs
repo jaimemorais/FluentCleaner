@@ -8,10 +8,8 @@ using WinRT.Interop;
 
 namespace FluentCleaner.Views;
 
-public sealed partial class SettingsPage : Page, IPageActions
+public sealed partial class SettingsPage : Page
 {
-    private static readonly HttpClient _http = new();
-    private string? _updateVersion; // null = up to date, string = new version available
     private bool _pageReady; // true when the page has finished loading and is ready to handle events
     private string _groqKey = "";
     private string _openAiKey = "";
@@ -33,7 +31,6 @@ public sealed partial class SettingsPage : Page, IPageActions
         {
             _pageReady = false;
             ViewModel.Refresh();                                    //sync database toggles, paths, theme
-            await CheckForUpdateAsync(silent: true);               //silent update check; banner only if newer version found
             LoadAiSettings();
             await LoadSchedulerSettingsAsync();
 
@@ -64,63 +61,8 @@ public sealed partial class SettingsPage : Page, IPageActions
         SettingsScroll.ChangeView(null, 0, null, true);
     }
 
-    // --- Update check --------------------------------------------
-
-    private async Task CheckForUpdateAsync(bool silent = false)
-    {
-        try
-        {
-            var latest = (await _http.GetStringAsync(AppLinks.VersionCheck))
-                .Trim();
-
-            _updateVersion = Version.TryParse(latest, out var remote) &&
-                             Version.TryParse(AppInfo.VersionString, out var local) &&
-                             remote > local ? latest : null;
-        }
-        catch { _updateVersion = null; }
-
-        if (_updateVersion is not null)
-        {
-            UpdateBar.Severity = InfoBarSeverity.Error;
-            UpdateBar.Title   = ResourceService.Fmt("St_UpdateAvailable", _updateVersion);
-            UpdateBar.Message = ResourceService.Get("St_UpdateMessage");
-
-            var btn = new Button { Content = ResourceService.Get("St_Download"), Style = (Style)Application.Current.Resources["AccentButtonStyle"] };
-            btn.Click += async (_, _) => await AppLinks.OpenAsync(AppLinks.Releases);
-            UpdateBar.ActionButton = btn;
-            UpdateBar.IsOpen = true;
-        }
-        else if (!silent)
-        {
-            UpdateBar.Severity     = InfoBarSeverity.Success;
-            UpdateBar.Title        = ResourceService.Get("St_UpToDate");
-            UpdateBar.Message      = ResourceService.Fmt("St_UpToDateMessage", AppInfo.DisplayVersion);
-            UpdateBar.ActionButton = null;
-            UpdateBar.IsOpen       = true;
-        }
-    }
-
-    // --- IPageActions --------------------------------------------
-
-    public void BuildActions(MenuFlyout flyout)
-    {
-        if (_updateVersion is not null)
-        {
-            var updateItem = new MenuFlyoutItem { Text = ResourceService.Fmt("St_MenuUpdate", _updateVersion) };
-            updateItem.Click += async (_, _) => await AppLinks.OpenAsync(AppLinks.Releases);
-            flyout.Items.Add(updateItem);
-        }
-        else
-        {
-            var checkItem = new MenuFlyoutItem { Text = ResourceService.Get("St_MenuCheckUpdates") };
-            checkItem.Click += async (_, _) => await CheckForUpdateAsync();
-            flyout.Items.Add(checkItem);
-        }
-    }
-
     private async void Link_GitHub(object sender, RoutedEventArgs e)   => await AppLinks.OpenAsync(AppLinks.GitHub);
     private async void Link_Issues(object sender, RoutedEventArgs e)   => await AppLinks.OpenAsync(AppLinks.Issues);
-    private async void Link_Releases(object sender, RoutedEventArgs e) => await AppLinks.OpenAsync(AppLinks.Releases);
     private async void Link_Faq(object sender, RoutedEventArgs e)        => await AppLinks.OpenAsync(AppLinks.Faq);
     private async void Link_IconCredit(object sender, RoutedEventArgs e) => await AppLinks.OpenAsync(AppLinks.IconCredit);
 

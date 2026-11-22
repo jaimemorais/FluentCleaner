@@ -17,7 +17,7 @@
         <!-- Native TitleBar:icon + title left, search center, [...] right -->
         <TitleBar x:Name="AppTitleBar"
                   Grid.Row="0"
-                  Title="FluentCleaner"
+                  Title="FluentCleaner Personalizado Jaime"
                   Subtitle="{x:Bind InsiderSubtitle}"
                   IsPaneToggleButtonVisible="True"
                   PaneToggleRequested="TitleBar_PaneToggleRequested">
