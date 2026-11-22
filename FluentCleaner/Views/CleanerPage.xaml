@@ -60,9 +60,8 @@
 
                                 <!-- Category header: name + hover [...] menu -->
                                 <Expander.Header>
-                                    <Grid HorizontalAlignment="Stretch"
-                                              PointerEntered="CatHeader_PointerEntered"
-                                              PointerExited="CatHeader_PointerExited">
+                                    <Grid Height="22"
+                                              HorizontalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
@@ -76,12 +75,12 @@
                                                        ToolTipService.ToolTip="{x:Bind Name}"
                                                        VerticalAlignment="Center" />
 
-                                        <!-- [...] category actions; fades in on hover via code-behind -->
+                                        <!-- [...] category actions -->
                                         <Button x:Uid="BtnCategoryActions"
                                                     Grid.Column="1"
-                                                    Width="26" Height="26" Padding="0"
+                                                    Width="18" Height="18" MinHeight="0" Padding="0"
                                                     Margin="8,0,0,0"
-                                                    Opacity="0">
+                                                    VerticalAlignment="Center">
                                             <Button.Resources>
                                                 <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
                                                 <SolidColorBrush x:Key="ButtonBorderBrush" Color="Transparent" />
@@ -99,8 +98,10 @@
                                                     <!-- Tag passes the CategoryViewModel to the click handler -->
                                                     <MenuFlyoutItem x:Uid="MenuAnalyzeCategory"
                                                                         Tag="{x:Bind}"
+                                                                        Text="Analyze"
                                                                         Click="CatAnalyze_Click" />
                                                     <MenuFlyoutItem x:Uid="MenuCleanCategory"
+                                                                    Text="Clean"
                                                                         Tag="{x:Bind}"
                                                                         Click="CatClean_Click" />
                                                 </MenuFlyout>
@@ -115,9 +116,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:CleanerEntryViewModel">
                                             <!-- Three columns: [checkbox+name] [size after scan] [...] -->
-                                            <Grid Padding="2,0" Margin="16,0,0,0"
-                                                      PointerEntered="EntryRow_PointerEntered"
-                                                      PointerExited="EntryRow_PointerExited">
+                                            <Grid Padding="2,0" Margin="16,0,0,0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto" />
@@ -156,28 +155,30 @@
                                                                VerticalAlignment="Center"
                                                                Margin="2,0,4,0" />
 
-                                                <!-- [...] entry actions;fades in on hover.
-                                                         Tag="{x:Bind}" passes this EntryViewModel to the click handlers. -->
+                                                <!-- [...] entry actions; Tag passes this EntryViewModel to the click handlers. -->
                                                 <Button x:Uid="BtnEntryActions"
                                                             Grid.Column="2"
                                                             Width="22" Height="22" MinHeight="0" Padding="0"
                                                             Margin="0,0,4,0"
-                                                            VerticalAlignment="Center"
-                                                            Opacity="0">
+                                                            VerticalAlignment="Center">
                                                     <FontIcon Glyph="&#xE712;" FontSize="10" />
                                                     <Button.Flyout>
                                                         <MenuFlyout Placement="Bottom">
                                                             <MenuFlyoutItem x:Uid="MenuAnalyzeEntry"
                                                                                 Tag="{x:Bind}"
+                                                                            Text="Analyze"
                                                                                 Click="EntryAnalyze_Click" />
                                                             <MenuFlyoutItem x:Uid="MenuCleanEntry"
                                                                                 Tag="{x:Bind}"
+                                                                            Text="Clean"
                                                                                 Click="EntryClean_Click" />
                                                             <MenuFlyoutItem x:Uid="MenuExplainEntry"
                                                                                 Tag="{x:Bind}"
+                                                                            Text="Explain with AI"
                                                                                 Click="EntryExplain_Click" />
                                                             <MenuFlyoutItem x:Uid="MenuShowSource"
                                                                                 Tag="{x:Bind}"
+                                                                            Text="Show Source"
                                                                                 Click="EntrySource_Click" />
                                                         </MenuFlyout>
                                                     </Button.Flyout>

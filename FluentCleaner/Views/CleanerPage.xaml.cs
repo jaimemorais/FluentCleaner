@@ -277,24 +277,4 @@ public sealed partial class CleanerPage : Page, ISearchablePage, IPageActions
         return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }
 
-    // Show/hide the [...] button when hovering over a category header or entry row.
-    // the buttons sit at Opacity="0"
-    private void CatHeader_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) =>
-        SetMenuButtonOpacity(sender, 1);
-
-    private void CatHeader_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) =>
-        SetMenuButtonOpacity(sender, 0);
-
-    private void EntryRow_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) =>
-        SetMenuButtonOpacity(sender, 1);
-
-    private void EntryRow_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) =>
-        SetMenuButtonOpacity(sender, 0);
-
-    private static void SetMenuButtonOpacity(object sender, double opacity)
-    {
-        if (sender is Grid g)
-            foreach (var btn in g.Children.OfType<Button>())
-                btn.Opacity = opacity;
-    }
 }
