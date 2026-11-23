@@ -39,19 +39,16 @@ public sealed partial class MainWindow : Window
 
         var transition = new DrillInNavigationTransitionInfo();
 
-        if (args.IsSettingsSelected)
-        {
-            NavFrame.Navigate(typeof(SettingsPage), null, transition);
-        }
-        else if (args.SelectedItem is NavigationViewItem item)
+        if (args.SelectedItem is NavigationViewItem item)
         {
             switch (item.Tag)
             {
                 case "Cleaner":
                     NavFrame.Navigate(typeof(CleanerPage), null, transition);
                     break;
-                case "Terminal": NavFrame.Navigate(typeof(TerminalPage), null, transition); break;
-                case "Custom":   NavFrame.Navigate(typeof(CustomPage),   null, transition); break;
+                case "Settings":
+                    NavFrame.Navigate(typeof(SettingsPage), null, transition);
+                    break;
             }
         }
 

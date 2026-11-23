@@ -5,8 +5,8 @@ using FluentCleaner.Models;
 
 namespace FluentCleaner.Services;
 
-// Explains Winapp2 entries and generates Custom Cleaners through the provider
-// selected in Settings. Results are cached per provider and rule.
+// Explains Winapp2 entries through the provider selected in Settings.
+// Results are cached per provider and rule.
 public static class AiExplainer
 {
     private static readonly HttpClient _http = new();
@@ -57,67 +57,6 @@ public static class AiExplainer
 
         _cache[cacheKey] = text!;
         return text!;
-    }
-
-    // Generates a Winapp2 INI entry from a plain-English description.
-    public static Task<string> GenerateEntryAsync(string description) =>
-        GenerateAsync(
-            userMsg: $"Generate a Winapp2 cleaner entry for: {description}",
-            errorPrefix: "; ",
-            systemPrompt:
-                "You are a Winapp2 database expert. Generate a valid Winapp2 INI cleaner entry from the user description. " +
-                "Output ONLY raw INI — no explanation, no markdown, no code fences.\n" +
-                "STRUCTURE: [App Name]\n" +
-                "DETECTION (include at least one):\n" +
-                "  DetectKey=HKLM\\Software\\App  or  HKLM\\Software\\App|ValueName\n" +
-                "  DetectFile=%LocalAppData%\\App\\*\n" +
-                "  SpecialDetect=DET_CHROME|DET_FIREFOX|DET_EDGE|DET_OPERA|DET_THUNDERBIRD|DET_IE|DET_WINSTORE\n" +
-                "  Multiple detect lines use OR logic.\n" +
-                "FILE KEYS:\n" +
-                "  FileKey1=PATH|PATTERN  or  PATH|PATTERN|RECURSE  or  PATH|PATTERN|REMOVESELF\n" +
-                "  Multiple patterns: FileKey1=PATH|*.log;*.tmp;*.bak\n" +
-                "REGISTRY KEYS:\n" +
-                "  RegKey1=HKCU\\Software\\App  or  HKCU\\Software\\App|ValueName\n" +
-                "  Hives: HKCU HKLM HKCR HKU HKCC\n" +
-                "EXCLUDE KEYS:\n" +
-                "  ExcludeKey1=FILE|%AppData%\\App\\|important.dat\n" +
-                "  ExcludeKey2=PATH|%AppData%\\App\\Keep\\\n" +
-                "PATH VARIABLES:\n" +
-                "  %AppData% %LocalAppData% %LocalLowAppData% %ProgramData%\n" +
-                "  %ProgramFiles% %ProgramFiles(x86)% %UserProfile%\n" +
-                "  %SystemRoot% %System% %SystemDrive% %Temp%\n" +
-                "  %Documents% %Desktop% %Music% %Pictures% %Videos%\n" +
-                "OTHER FIELDS: Section=  Warning=  Default=True|False\n" +
-                "Write all natural-language field values in English.");
-
-    // Generates a PowerShell cleanup script from a plain-English description.
-    public static Task<string> GenerateScriptAsync(string description) =>
-        GenerateAsync(
-            userMsg: $"Generate a PowerShell script for: {description}",
-            errorPrefix: "# ",
-            systemPrompt:
-                "You are a Windows PowerShell expert. Generate a practical, well-written PowerShell script based on the user description. " +
-                "Output ONLY raw PowerShell — no explanation, no markdown, no code fences.\n" +
-                "RULES:\n" +
-                "  - First line MUST be a # comment briefly describing what the script does.\n" +
-                "  - Use $env: variables where appropriate: $env:LOCALAPPDATA $env:APPDATA $env:TEMP $env:USERPROFILE $env:ProgramFiles $env:SystemRoot.\n" +
-                "  - Always use -ErrorAction SilentlyContinue or try/catch — never let the script crash.\n" +
-                "  - Use Write-Host to report progress.\n" +
-                "  - Write the required script comment in English.\n" +
-                "  - NEVER use Invoke-Expression or download and execute remote code.");
-
-    // Sends generation requests through the same provider selected for explanations.
-    private static async Task<string> GenerateAsync(string userMsg, string systemPrompt, string errorPrefix)
-    {
-        var provider = AppSettings.Instance.AiProvider;
-        var apiKey = ApiKey(provider);
-        if (string.IsNullOrWhiteSpace(apiKey))
-            return $"{errorPrefix}{provider}: {ResourceService.Get("AI_NoKeyShort")}";
-
-        var (text, error) = await SendChatAsync(provider, apiKey!, systemPrompt, userMsg, 500);
-        return error == null
-            ? text!
-            : $"{errorPrefix}{ProviderMessage("AI_ApiError", provider, error)}";
     }
 
     // A small real request verifies both the key and the selected provider.

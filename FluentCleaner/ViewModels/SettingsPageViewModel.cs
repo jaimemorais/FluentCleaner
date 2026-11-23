@@ -11,30 +11,24 @@ public record HistoryRow(string Date, string Amount, string Bar, string Items);
 
 public partial class SettingsPageViewModel : ObservableObject
 {
-    private const string Winapp2Url  = "https://raw.githubusercontent.com/builtbybel/FluentCleaner/master/Winapp2.ini";
-    private const string Winapp3Url  = "https://raw.githubusercontent.com/MoscaDotTo/Winapp2/master/Winapp3/Winapp3.ini";
-    private const string WinappxUrl  = "https://raw.githubusercontent.com/builtbybel/FluentCleaner/master/Winappx.ini";
+    private const string Winapp2Url = "https://raw.githubusercontent.com/builtbybel/FluentCleaner/master/Winapp2.ini";
+    private const string Winapp3Url = "https://raw.githubusercontent.com/MoscaDotTo/Winapp2/master/Winapp3/Winapp3.ini";
 
-    private static string Winapp2LocalPath  => Path.Combine(AppContext.BaseDirectory, "Winapp2.ini");
-    private static string Winapp3LocalPath  => Path.Combine(AppContext.BaseDirectory, "Winapp3.ini");
-    private static string WinappxLocalPath  => Path.Combine(AppContext.BaseDirectory, "Winappx.ini");
+    private static string Winapp2LocalPath => Path.Combine(AppContext.BaseDirectory, "Winapp2.ini");
+    private static string Winapp3LocalPath => Path.Combine(AppContext.BaseDirectory, "Winapp3.ini");
 
     // --- Observable state -----------------------------------------------------
 
     // Database toggles
     [ObservableProperty] public partial bool   EnableWinapp2 { get; set; } = true;
     [ObservableProperty] public partial bool   EnableWinapp3 { get; set; }
-    [ObservableProperty] public partial bool   EnableWinappx { get; set; } = true;
     [ObservableProperty] public partial bool   Winapp3Available { get; set; }    // Winapp3.ini exists on disk
     [ObservableProperty] public partial bool   Winapp3NotAvailable { get; set; } // inverse; drives the Download button
-    [ObservableProperty] public partial bool   WinappxAvailable { get; set; }    // Winappx.ini exists on disk
-    [ObservableProperty] public partial bool   WinappxNotAvailable { get; set; } // inverse; drives the Download button
     [ObservableProperty] public partial bool   IsCustomSource { get; set; }      // custom path row has a saved value
 
     // File-info strings shown below each database row
     [ObservableProperty] public partial string Winapp2Info { get; set; } = "";
     [ObservableProperty] public partial string Winapp3Info { get; set; } = "";
-    [ObservableProperty] public partial string WinappxInfo { get; set; } = "";
 
     // Custom database path
     [ObservableProperty] public partial string CustomPath { get; set; } = "";
@@ -96,22 +90,10 @@ public partial class SettingsPageViewModel : ObservableObject
         RefreshFileInfo();
     }
 
-    partial void OnEnableWinappxChanged(bool value)
-    {
-        if (_refreshing) return;
-        AppSettings.Instance.EnableWinappx = value;
-        AppSettings.Instance.Save();
-        StatusText = value && !File.Exists(WinappxLocalPath)
-            ? ResourceService.Get("St_WinappxNotDownloaded")
-            : "";
-        RefreshFileInfo();
-    }
-
     partial void OnIsBusyChanged(bool value)
     {
         DownloadLatestCommand.NotifyCanExecuteChanged();
         DownloadWinapp3Command.NotifyCanExecuteChanged();
-        DownloadWinappxCommand.NotifyCanExecuteChanged();
     }
 
     // --- Post-clean tasks -----------------------------------------------------
@@ -207,11 +189,8 @@ public partial class SettingsPageViewModel : ObservableObject
 
         EnableWinapp2       = s.EnableWinapp2;
         EnableWinapp3       = s.EnableWinapp3;
-        EnableWinappx       = s.EnableWinappx;
         Winapp3Available    = File.Exists(Winapp3LocalPath);
         Winapp3NotAvailable = !Winapp3Available;
-        WinappxAvailable    = File.Exists(WinappxLocalPath);
-        WinappxNotAvailable = !WinappxAvailable;
         CustomPath          = s.CustomWinapp2Path ?? "";
         IsCustomSource      = !string.IsNullOrWhiteSpace(s.CustomWinapp2Path);
         PostCleanEnabled         = s.PostCleanEnabled;
@@ -281,17 +260,6 @@ public partial class SettingsPageViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanDownload))]
-    private async Task DownloadWinappxAsync()
-    {
-        if (await DownloadFileAsync(WinappxUrl, WinappxLocalPath, "Winappx"))
-        {
-            AppSettings.Instance.EnableWinappx = true;
-            AppSettings.Instance.Save();
-            Refresh();
-        }
-    }
-
     private bool CanDownload() => !IsBusy;
 
     // Returns true on success, false on failure (error already written to StatusText).
@@ -318,7 +286,6 @@ public partial class SettingsPageViewModel : ObservableObject
     {
         Winapp2Info = BuildFileInfo(Winapp2LocalPath);
         Winapp3Info = BuildFileInfo(Winapp3LocalPath);
-        WinappxInfo = BuildFileInfo(WinappxLocalPath);
     }
 
     private static string BuildFileInfo(string path)

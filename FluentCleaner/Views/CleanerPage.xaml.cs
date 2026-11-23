@@ -3,7 +3,6 @@ using FluentCleaner.Services;
 using FluentCleaner.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
 
 namespace FluentCleaner.Views;
 
@@ -27,15 +26,6 @@ public sealed partial class CleanerPage : Page, ISearchablePage, IPageActions
             if (paths.Count == 0) paths.Add(Path.Combine(AppContext.BaseDirectory, "Winapp2.ini"));
             await ViewModel.LoadWinapp2Async(paths);
         };
-    }
-
-    // OnNavigatedTo fires on every visit, even with NavigationCacheMode="Required".
-    // Loaded only fires once, so this is the right place to pick up new custom entries
-    protected override void OnNavigatedTo(NavigationEventArgs e)
-    {
-        base.OnNavigatedTo(e);
-        if (_loaded)
-            _ = ViewModel.RefreshCustomEntriesAsync();
     }
 
     // --- ISearchablePage ----------------------------------------------------------

@@ -2,7 +2,6 @@ using FluentCleaner.Services;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using Windows.Graphics;
 
 namespace FluentCleaner;
@@ -60,7 +59,6 @@ public partial class App : Application
         MainWindow = new MainWindow();
         SetupTitleBar();
         RestoreWindowSize();
-        ApplyBackdrop(AppSettings.Instance.Backdrop);
         ApplyTheme(AppSettings.Instance.Theme);
         MainWindow.Activate();
 
@@ -127,15 +125,4 @@ public partial class App : Application
         };
     }
 
-    // Mica by default, acrylic if the user set it via terminal. No Settings UI for this on purpose
-    public void ApplyBackdrop(string? backdrop)
-    {
-        if (MainWindow is null) return;
-
-        MainWindow.SystemBackdrop = backdrop?.ToLowerInvariant() switch
-        {
-            "acrylic" => new DesktopAcrylicBackdrop(),
-            _         => new MicaBackdrop()
-        };
-    }
 }

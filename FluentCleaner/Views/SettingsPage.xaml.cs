@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using FluentCleaner.Services;
 using FluentCleaner.ViewModels;
 using Microsoft.UI.Xaml;
@@ -27,13 +26,11 @@ public sealed partial class SettingsPage : Page
         _navigationReady = true;
         ShowSettingsSection("General");
         AiProviderBox.ItemsSource = new[] { "Groq", "OpenAI", "Anthropic" };
-        Loaded += async (_, _) =>
+        Loaded += (_, _) =>
         {
             _pageReady = false;
             ViewModel.Refresh();                                    //sync database toggles, paths, theme
             LoadAiSettings();
-            await LoadSchedulerSettingsAsync();
-
             _pageReady = true;
         };
     }
@@ -55,7 +52,6 @@ public sealed partial class SettingsPage : Page
         PostCleanSection.Visibility = section == "Tasks" ? Visibility.Visible : Visibility.Collapsed;
         HistorySection.Visibility = section == "History" ? Visibility.Visible : Visibility.Collapsed;
         AiSection.Visibility = section == "AI" ? Visibility.Visible : Visibility.Collapsed;
-        SchedulerSection.Visibility = section == "Scheduler" ? Visibility.Visible : Visibility.Collapsed;
         BackupSection.Visibility = AboutSection.Visibility =
             section == "About" ? Visibility.Visible : Visibility.Collapsed;
         SettingsScroll.ChangeView(null, 0, null, true);
@@ -65,114 +61,6 @@ public sealed partial class SettingsPage : Page
     private async void Link_Issues(object sender, RoutedEventArgs e)   => await AppLinks.OpenAsync(AppLinks.Issues);
     private async void Link_Faq(object sender, RoutedEventArgs e)        => await AppLinks.OpenAsync(AppLinks.Faq);
     private async void Link_IconCredit(object sender, RoutedEventArgs e) => await AppLinks.OpenAsync(AppLinks.IconCredit);
-
-    private async Task LoadSchedulerSettingsAsync()
-    {
-        SchedulerFrequencyBox.ItemsSource = new[]
-        {
-            ResourceService.Get("Scheduler_FreqDaily"),
-            ResourceService.Get("Scheduler_FreqWeekly"),
-            ResourceService.Get("Scheduler_FreqLogon"),
-        };
-
-        var settings = AppSettings.Instance;
-        SchedulerFrequencyBox.SelectedIndex = settings.ModernSchedulerFrequency switch
-        {
-            "Weekly" => 1,
-            "Logon"  => 2,
-            _        => 0,
-        };
-
-        SchedulerTimePicker.Time = TimeSpan.TryParse(settings.ModernSchedulerTime, out var time)
-            ? time
-            : new TimeSpan(3, 0, 0);
-        SchedulerShutdownCheck.IsChecked = settings.ModernSchedulerShutdownAfter;
-
-        var exists = await Task.Run(TaskSchedulerService.Exists);
-        SchedulerEnabledToggle.IsOn = exists;
-        SetSchedulerStatus(exists);
-        SchedulerResultText.Text = "";
-        UpdateSchedulerControls();
-    }
-
-    private void SchedulerEnabled_Toggled(object sender, RoutedEventArgs e)
-    {
-        if (_pageReady)
-            UpdateSchedulerControls();
-    }
-
-    private void SchedulerFrequency_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_pageReady)
-            UpdateSchedulerControls();
-    }
-
-    private void UpdateSchedulerControls()
-    {
-        var enabled = SchedulerEnabledToggle.IsOn;
-        SchedulerFrequencyBox.IsEnabled = enabled;
-        SchedulerTimePicker.IsEnabled = enabled && SchedulerFrequencyBox.SelectedIndex != 2;
-        SchedulerShutdownCheck.IsEnabled = enabled;
-    }
-
-    private void SaveSchedulerSettings()
-    {
-        var settings = AppSettings.Instance;
-        settings.ModernSchedulerFrequency = SchedulerFrequencyBox.SelectedIndex switch
-        {
-            1 => "Weekly",
-            2 => "Logon",
-            _ => "Daily",
-        };
-        settings.ModernSchedulerTime = SchedulerTimePicker.Time.ToString(@"hh\:mm");
-        settings.ModernSchedulerShutdownAfter = SchedulerShutdownCheck.IsChecked == true;
-        settings.Save();
-    }
-
-    private void SetSchedulerStatus(bool active) =>
-        SchedulerStatusText.Text = ResourceService.Get(
-            active ? "Scheduler_StatusActive" : "Scheduler_StatusInactive");
-
-    private async void SchedulerApply_Click(object sender, RoutedEventArgs e)
-    {
-        SaveSchedulerSettings();
-        SchedulerApplyButton.IsEnabled = false;
-        SchedulerResultText.Text = ResourceService.Get("Scheduler_Applying");
-
-        (bool Ok, string Message) result;
-        if (!SchedulerEnabledToggle.IsOn)
-        {
-            result = await Task.Run(TaskSchedulerService.Delete);
-        }
-        else
-        {
-            var frequency = SchedulerFrequencyBox.SelectedIndex switch
-            {
-                1 => SchedulerFrequency.Weekly,
-                2 => SchedulerFrequency.Logon,
-                _ => SchedulerFrequency.Daily,
-            };
-            var scheduledTime = SchedulerTimePicker.Time;
-            var shutdownAfter = SchedulerShutdownCheck.IsChecked == true;
-            result = await Task.Run(() => TaskSchedulerService.CreateOrUpdate(
-                frequency,
-                scheduledTime,
-                shutdownAfter));
-        }
-
-        SchedulerResultText.Text = $"{(result.Ok ? "✓" : "✗")} {result.Message}";
-        SetSchedulerStatus(await Task.Run(TaskSchedulerService.Exists));
-        SchedulerApplyButton.IsEnabled = true;
-    }
-
-    private void SchedulerOpen_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            Process.Start(new ProcessStartInfo("taskschd.msc") { UseShellExecute = true });
-        }
-        catch { }
-    }
 
     private void LoadAiSettings()
     {

@@ -11,13 +11,12 @@ namespace FluentCleaner.ViewModels;
 public partial class CleanerPageViewModel : ObservableObject
 {
     // --- Services & fields --------------------------------------------------
-    private readonly Winapp2Parser      _parser        = new();
-    private readonly DetectionService  _detection     = new();
-    private readonly CleaningService   _cleaner       = new();
-    private readonly CustomEntryService _customService = new();
+    private readonly Winapp2Parser     _parser    = new();
+    private readonly DetectionService _detection = new();
+    private readonly CleaningService  _cleaner   = new();
 
     private readonly List<ScanResult> _lastScan = [];       // hand-off between "Analyze" and "Clean"
-    private List<CleanerEntry> _loadedEntries    = [];      // installed main-DB entries + all enabled custom entries (custom skips IsInstalled)
+    private List<CleanerEntry> _loadedEntries    = [];      // installed entries from the active databases
     private List<string> _lastPaths = [];                   // stored so Refresh can reload without the paths being passed again
     private bool _suppressSave;                             // prevents N disk writes when SelectAll/SelectNone fires per-entry callbacks
     private CancellationTokenSource? _cts;                  // lives only during an active scan or clean; null = nothing running
@@ -121,27 +120,11 @@ public partial class CleanerPageViewModel : ObservableObject
 
         _loadedEntries = await Task.Run(() => allEntries.Where(_detection.IsInstalled).ToList());
 
-        // Layer the user's custom entries on top (skip IsInstalled)
-        _loadedEntries.RemoveAll(e => e.IsCustom);
-        _loadedEntries.AddRange(await _customService.LoadEnabledEntriesAsync());
-
         RebuildVisibleCategories();
 
         StatusText = ResourceService.Fmt("St_AnalysisReady", _loadedEntries.Count, allEntries.Count);
         RefreshCategoryState();
         IsBusy = false;
-    }
-
-    // --- Custom Entries (.ini only;ps1 scripts stay in CustomPage) ----------------
-    // Re-reads only the Custom/folder;skips the full Winapp2 reload.
-    // CleanerPage calls this on every visit so changes from CustomPage show up immediately
-    public async Task RefreshCustomEntriesAsync()
-    {
-        if (IsBusy) return;
-        _loadedEntries.RemoveAll(e => e.IsCustom);
-        _loadedEntries.AddRange(await _customService.LoadEnabledEntriesAsync());
-        RebuildVisibleCategories();
-        RefreshCategoryState();
     }
 
     // --- Analyze & Clean ----------------------------------------------------

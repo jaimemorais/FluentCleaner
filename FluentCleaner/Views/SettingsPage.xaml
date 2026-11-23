@@ -33,7 +33,6 @@
             <ListViewItem x:Uid="SettingsNavTasks" Tag="Tasks" />
             <ListViewItem x:Uid="SettingsNavHistory" Tag="History" />
             <ListViewItem x:Uid="SettingsNavAI" Tag="AI" />
-            <ListViewItem x:Uid="SettingsNavScheduler" Tag="Scheduler" />
             <ListViewItem x:Uid="SettingsNavAbout" Tag="About" />
         </ListView>
 
@@ -199,67 +198,6 @@
                                           MinWidth="0" Margin="0,0,-8,0"
                                           VerticalAlignment="Center" />
                         </Grid>
-
-                        <!-- Divider -->
-                        <Rectangle Height="1" Fill="{ThemeResource CardStrokeColorDefaultBrush}" />
-
-                        <!-- Winappx row -->
-                        <Grid MinHeight="72" Padding="18,0" ColumnSpacing="14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="112" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Icon -->
-                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6"
-                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
-                                    Margin="0,0,12,0" VerticalAlignment="Center">
-                                <FontIcon Glyph="&#xE977;" FontSize="18"
-                                          Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
-                            </Border>
-
-                            <!-- Name + info -->
-                            <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <TextBlock x:Uid="LblWinappx" FontWeight="SemiBold" />
-                                    <Border Background="{ThemeResource SystemFillColorSuccessBrush}"
-                                            CornerRadius="3" Padding="4,1" VerticalAlignment="Center">
-                                        <TextBlock x:Uid="LblWinappxTag" FontSize="10" Foreground="White" />
-                                    </Border>
-                                </StackPanel>
-                                <TextBlock FontSize="11"
-                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                    <Run Text="{x:Bind ViewModel.WinappxInfo, Mode=OneWay}" />
-                                    <Run Text="  —  AppX / bloatware entries for the terminal debloater."
-                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-                                </TextBlock>
-                            </StackPanel>
-
-                            <!-- Download (not yet on disk) / Update (already downloaded) -->
-                            <StackPanel Grid.Column="2" Orientation="Horizontal"
-                                        HorizontalAlignment="Right" Spacing="6">
-                                <Button x:Uid="BtnDownloadWinappx"
-                                        Command="{x:Bind ViewModel.DownloadWinappxCommand}"
-                                        Visibility="{x:Bind ViewModel.WinappxNotAvailable, Mode=OneWay,
-                                            Converter={StaticResource BoolToVisibilityConverter}}" />
-                                <Button x:Uid="BtnUpdateWinappx"
-                                        Command="{x:Bind ViewModel.DownloadWinappxCommand}"
-                                        Visibility="{x:Bind ViewModel.WinappxAvailable, Mode=OneWay,
-                                            Converter={StaticResource BoolToVisibilityConverter}}" />
-                            </StackPanel>
-
-                            <!-- Toggle -->
-                            <ToggleSwitch Grid.Column="3"
-                                          IsOn="{x:Bind ViewModel.EnableWinappx, Mode=TwoWay}"
-                                          OnContent="" OffContent=""
-                                          MinWidth="0" Margin="0,0,-8,0"
-                                          VerticalAlignment="Center" />
-                        </Grid>
-
-                        <!-- Divider -->
-                        <Rectangle Height="1" Fill="{ThemeResource CardStrokeColorDefaultBrush}" />
 
                         <!--Status / error text -->
                         <TextBlock Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
@@ -492,75 +430,7 @@
                 </Expander>
             </StackPanel>
 
-            <!-- Scheduled cleaning -->
-            <StackPanel x:Name="SchedulerSection" Spacing="8" Visibility="Collapsed">
-                <StackPanel Spacing="2">
-                    <TextBlock x:Uid="SectionScheduler" FontSize="13" FontWeight="SemiBold" />
-                    <TextBlock x:Uid="LblSchedulerDesc"
-                               TextWrapping="Wrap"
-                               FontSize="12"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-
-                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1" CornerRadius="8" Padding="18,14">
-                    <StackPanel Spacing="12">
-                        <Grid ColumnSpacing="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ToggleSwitch x:Name="SchedulerEnabledToggle"
-                                          x:Uid="SchedulerEnabled"
-                                          OnContent="" OffContent=""
-                                          Toggled="SchedulerEnabled_Toggled" />
-                            <TextBlock x:Name="SchedulerStatusText"
-                                       Grid.Column="1"
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                        </Grid>
-
-                        <Grid ColumnSpacing="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180" />
-                                <ColumnDefinition Width="160" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="SchedulerFrequencyBox"
-                                      x:Uid="SchedulerFrequency"
-                                      SelectionChanged="SchedulerFrequency_SelectionChanged" />
-                            <TimePicker x:Name="SchedulerTimePicker"
-                                        x:Uid="SchedulerTime"
-                                        Grid.Column="1"
-                                        ClockIdentifier="24HourClock" />
-                            <CheckBox x:Name="SchedulerShutdownCheck"
-                                      x:Uid="SchedulerShutdown"
-                                      Grid.Column="2"
-                                      VerticalAlignment="Bottom"
-                                      Margin="0,0,0,7" />
-                        </Grid>
-
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button x:Name="SchedulerApplyButton"
-                                    x:Uid="SchedulerApply"
-                                    Style="{StaticResource AccentButtonStyle}"
-                                    Click="SchedulerApply_Click" />
-                            <HyperlinkButton x:Uid="SchedulerOpen"
-                                             Padding="0"
-                                             Click="SchedulerOpen_Click" />
-                        </StackPanel>
-
-                        <TextBlock x:Name="SchedulerResultText"
-                                   TextWrapping="Wrap"
-                                   FontSize="12"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-
-                <!-- AI explanations -->
+            <!-- AI explanations -->
                 <StackPanel x:Name="AiSection" Spacing="8" Visibility="Collapsed">
                     <StackPanel Spacing="6">
 
@@ -647,14 +517,6 @@
                                Visibility="Collapsed"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
 
-                    <!-- Custom Cleaner AI hint -->
-                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,8,0,0">
-                        <TextBlock x:Uid="LblAICustomHint"
-                                   TextWrapping="Wrap" FontSize="12"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    </Border>
                 </StackPanel>
 
                 <!-- Backup / Portable -->

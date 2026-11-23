@@ -19,6 +19,10 @@
     <FileVersion>26.09.01</FileVersion>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Page Remove="Views\CustomPage.xaml" />
+    <Page Remove="Views\NewCleanerDialog.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
@@ -41,7 +45,6 @@
     <Compile Include="..\FluentCleaner.Core\Models\RegKeyEntry.cs" Link="Models\RegKeyEntry.cs" />
     <Compile Include="..\FluentCleaner.Core\Models\ScanResult.cs" Link="Models\ScanResult.cs" />
     <Compile Include="..\FluentCleaner.Core\Services\CategoryResolver.cs" Link="Services\CategoryResolver.cs" />
-    <Compile Include="..\FluentCleaner.Core\Services\CustomEntryService.cs" Link="Services\CustomEntryService.cs" />
     <Compile Include="..\FluentCleaner.Core\Services\DetectionService.cs" Link="Services\DetectionService.cs" />
     <Compile Include="..\FluentCleaner.Core\Services\PathExpander.cs" Link="Services\PathExpander.cs" />
     <Compile Include="..\FluentCleaner.Core\Services\RegistryHelpers.cs" Link="Services\RegistryHelpers.cs" />
@@ -65,5 +68,14 @@
     <Content Include="..\Winapp2.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Views\CustomPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\NewCleanerDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
 </Project>

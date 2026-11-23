@@ -2,7 +2,7 @@
     x:Class="FluentCleaner.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="FluentCleaner">
+    Title="Jaime FluentCleaner">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
@@ -17,7 +17,7 @@
         <!-- Native TitleBar:icon + title left, search center, [...] right -->
         <TitleBar x:Name="AppTitleBar"
                   Grid.Row="0"
-                  Title="FluentCleaner Personalizado Jaime"
+                  Title="Jaime FluentCleaner"
                   Subtitle="{x:Bind InsiderSubtitle}"
                   IsPaneToggleButtonVisible="True"
                   PaneToggleRequested="TitleBar_PaneToggleRequested">
@@ -87,6 +87,7 @@
                         IsTitleBarAutoPaddingEnabled="False"
                         IsBackButtonVisible="Collapsed"
                         IsPaneToggleButtonVisible="False"
+                        IsSettingsVisible="False"
                         CompactPaneLength="48"
                         OpenPaneLength="240"
                         SelectionChanged="NavView_SelectionChanged">
@@ -97,14 +98,9 @@
                         <FontIcon Glyph="&#xEA99;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="NavTerminal" Tag="Terminal">
+                <NavigationViewItem x:Uid="NavSettings" Tag="Settings">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE943;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="NavCustom" Tag="Custom">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE710;" />
+                        <FontIcon Glyph="&#xE713;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

@@ -25,9 +25,6 @@ public static class SilentRunner
         foreach (var p in paths)
             allEntries.AddRange(await parser.ParseFileAsync(p));
 
-        // Custom/ folder entries;same as the GUI does via CustomEntryService
-        allEntries.AddRange(await new CustomEntryService().LoadEnabledEntriesAsync());
-
         allEntries = allEntries
             .DistinctBy(e => e.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();

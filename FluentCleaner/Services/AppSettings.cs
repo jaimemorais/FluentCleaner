@@ -51,7 +51,6 @@ public class AppSettings
     // which built-in databases to load on startup
     public bool EnableWinapp2 { get; set; } = true;
     public bool EnableWinapp3 { get; set; } = false;
-    public bool EnableWinappx { get; set; } = true;   // AppX/bloatware database for terminal debloater
 
     // post-clean commands;one per line; global on/off switch
     public bool   PostCleanEnabled  { get; set; } = false;
@@ -65,9 +64,6 @@ public class AppSettings
     // Website domains protected by the Cookie Manager during browser cleaning.
     public List<string> CookieDomainsToKeep { get; set; } = [];
 
-    // backdrop style;terminal-only tweak, no Settings UI on purpose
-    public string Backdrop { get; set; } = "mica";
-
     // remembered window size;restored on next launch
     public int WindowWidth  { get; set; } = 960;
     public int WindowHeight { get; set; } = 620;
@@ -76,18 +72,13 @@ public class AppSettings
     public bool CleanHistoryEnabled { get; set; } = true;
     public List<CleanHistoryEntry> CleanHistory { get; set; } = [];
 
-    // Provider used for explanations and Custom Cleaner generation.
+    // Provider used for AI explanations.
     public string AiProvider { get; set; } = "Groq";
 
     // Provider keys stay separate so switching providers never overwrites another key.
     public string? GroqApiKey { get; set; }
     public string? OpenAiApiKey { get; set; }
     public string? AnthropicApiKey { get; set; }
-
-    // Modern and Classic use separate task names and schedules.
-    public string ModernSchedulerFrequency { get; set; } = "Daily";
-    public string ModernSchedulerTime { get; set; } = "03:00";
-    public bool ModernSchedulerShutdownAfter { get; set; }
 
     // Classic writes keys this app doesn't type (WindowX/WindowY). Keep them across
     // a save instead of dropping them from the shared file.
